@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="UTF-8"?><process version="7.3.000">
+  <context>
+    <input/>
+    <output/>
+    <macros/>
+  </context>
+  <operator activated="true" class="process" compatibility="7.3.000" expanded="true" name="Process">
+    <parameter key="logverbosity" value="init"/>
+    <parameter key="random_seed" value="2001"/>
+    <parameter key="send_mail" value="never"/>
+    <parameter key="notification_email" value=""/>
+    <parameter key="process_duration_for_mail" value="30"/>
+    <parameter key="encoding" value="SYSTEM"/>
+    <process expanded="true">
+      <operator activated="true" class="read_excel" compatibility="7.3.000" expanded="true" height="68" name="Read Excel" width="90" x="179" y="85">
+        <parameter key="excel_file" value="C:\Users\suvad\Desktop\CS583\Project 2\Romney.xlsx"/>
+        <parameter key="sheet_number" value="1"/>
+        <parameter key="imported_cell_range" value="A1:J3648"/>
+        <parameter key="encoding" value="SYSTEM"/>
+        <parameter key="first_row_as_names" value="true"/>
+        <list key="annotations">
+          <parameter key="0" value="Name"/>
+        </list>
+        <parameter key="date_format" value=""/>
+        <parameter key="time_zone" value="SYSTEM"/>
+        <parameter key="locale" value="English (United States)"/>
+        <list key="data_set_meta_data_information">
+          <parameter key="0" value="Anotated tweet.true.text.attribute"/>
+          <parameter key="1" value="Class.true.integer.label"/>
+          <parameter key="2" value="C.false.attribute_value.attribute"/>
+          <parameter key="3" value="D.false.attribute_value.attribute"/>
+          <parameter key="4" value="E.false.attribute_value.attribute"/>
+          <parameter key="5" value="F.false.attribute_value.attribute"/>
+          <parameter key="6" value="G.false.attribute_value.attribute"/>
+          <parameter key="7" value="H.false.attribute_value.attribute"/>
+          <parameter key="8" value="I.false.attribute_value.attribute"/>
+          <parameter key="9" value="J.false.attribute_value.attribute"/>
+        </list>
+        <parameter key="read_not_matching_values_as_missings" value="false"/>
+        <parameter key="datamanagement" value="double_array"/>
+      </operator>
+      <operator activated="true" class="filter_examples" compatibility="7.3.000" expanded="true" height="103" name="Filter Examples" width="90" x="313" y="85">
+        <parameter key="parameter_expression" value=""/>
+        <parameter key="condition_class" value="no_missing_attributes"/>
+        <parameter key="invert_filter" value="false"/>
+        <list key="filters_list">
+          <parameter key="filters_entry_key" value="Anotated tweet.is_not_missing."/>
+        </list>
+        <parameter key="filters_logic_and" value="false"/>
+        <parameter key="filters_check_metadata" value="true"/>
+      </operator>
+      <operator activated="true" class="numerical_to_polynominal" compatibility="7.3.000" expanded="true" height="82" name="Numerical to Polynominal" width="90" x="447" y="85">
+        <parameter key="attribute_filter_type" value="no_missing_values"/>
+        <parameter key="attribute" value=""/>
+        <parameter key="attributes" value="Class"/>
+        <parameter key="use_except_expression" value="false"/>
+        <parameter key="value_type" value="numeric"/>
+        <parameter key="use_value_type_exception" value="false"/>
+        <parameter key="except_value_type" value="real"/>
+        <parameter key="block_type" value="value_series"/>
+        <parameter key="use_block_type_exception" value="false"/>
+        <parameter key="except_block_type" value="value_series_end"/>
+        <parameter key="invert_selection" value="false"/>
+        <parameter key="include_special_attributes" value="true"/>
+      </operator>
+      <operator activated="true" class="text:process_document_from_data" compatibility="7.3.000" expanded="true" height="82" name="Process Documents from Data" width="90" x="581" y="89">
+        <parameter key="create_word_vector" value="true"/>
+        <parameter key="vector_creation" value="TF-IDF"/>
+        <parameter key="add_meta_information" value="true"/>
+        <parameter key="keep_text" value="false"/>
+        <parameter key="prune_method" value="by ranking"/>
+        <parameter key="prune_below_percent" value="3.0"/>
+        <parameter key="prune_above_percent" value="30.0"/>
+        <parameter key="prune_below_rank" value="0.3"/>
+        <parameter key="prune_above_rank" value="0.97"/>
+        <parameter key="datamanagement" value="double_sparse_array"/>
+        <parameter key="select_attributes_and_weights" value="false"/>
+        <list key="specify_weights"/>
+        <process expanded="true">
+          <operator activated="true" class="web:extract_html_text_content" compatibility="7.3.000" expanded="true" height="68" name="Extract Content" width="90" x="45" y="30">
+            <parameter key="extract_content" value="true"/>
+            <parameter key="minimum_text_block_length" value="2"/>
+            <parameter key="override_content_type_information" value="false"/>
+            <parameter key="neglegt_span_tags" value="true"/>
+            <parameter key="neglect_p_tags" value="true"/>
+            <parameter key="neglect_b_tags" value="true"/>
+            <parameter key="neglect_i_tags" value="true"/>
+            <parameter key="neglect_br_tags" value="true"/>
+            <parameter key="ignore_non_html_tags" value="false"/>
+          </operator>
+          <operator activated="true" class="text:transform_cases" compatibility="7.3.000" expanded="true" height="68" name="Transform Cases (2)" width="90" x="45" y="120">
+            <parameter key="transform_to" value="lower case"/>
+          </operator>
+          <operator activated="true" class="text:replace_tokens" compatibility="7.3.000" expanded="true" height="68" name="Replace Tokens (2)" width="90" x="45" y="210">
+            <list key="replace_dictionary">
+              <parameter key="http([a-zA-Z0-9./:]*)([ \r\n])*" value=" "/>
+              <parameter key="(:\-\))" value=" positive "/>
+              <parameter key="(:\))" value=" positive "/>
+              <parameter key="(:o\))" value=" positive "/>
+              <parameter key="(:\])" value=" positive "/>
+              <parameter key="(:3)" value=" positive "/>
+              <parameter key="(:c\))" value=" positive "/>
+              <parameter key="(:d)" value=" positive "/>
+              <parameter key="(c:)" value=" positive "/>
+              <parameter key="(:\-\()" value=" negative "/>
+              <parameter key="(:\()" value=" negative "/>
+              <parameter key="(:c)" value=" negative "/>
+              <parameter key="(:\[)" value=" negative "/>
+              <parameter key="[!;,?.'&quot;\-%$&lt;&gt;&amp;\(\)\{\}\[\]_\_=,;:\*\\~\+#]" value=" "/>
+              <parameter key="\s{2,}?" value=" "/>
+              <parameter key="\s{2,}?" value=" "/>
+              <parameter key="\s(no)" value=" negative "/>
+              <parameter key="\s(not)" value=" negative "/>
+              <parameter key="\s(nt)" value=" negative "/>
+              <parameter key="(n't)" value=" negative "/>
+              <parameter key="\s{2,}?" value="  "/>
+            </list>
+          </operator>
+          <operator activated="false" class="text:replace_tokens" compatibility="7.3.000" expanded="true" height="68" name="Replace Tokens (4)" width="90" x="45" y="300">
+            <list key="replace_dictionary">
+              <parameter key="(\/)" value=" "/>
+              <parameter key="([a-z]+)[0-9]+" value="$1 "/>
+              <parameter key="[0-9]+([a-z]+)" value="$1 "/>
+              <parameter key="\s+[0-9]+[-!&quot;#$%&amp;'()*+,./:;&lt;=&gt;?@\[\\\]_`{|}~]" value=" $1"/>
+              <parameter key="@[a-z0-9]+" value=" "/>
+            </list>
+          </operator>
+          <operator activated="false" class="text:replace_tokens" compatibility="7.3.000" expanded="true" height="68" name="Replace Tokens" width="90" x="179" y="30">
+            <list key="replace_dictionary">
+              <parameter key="(?iu)(a){3,}?" value="$1"/>
+              <parameter key="(?iu)(b){3,}?" value="$1"/>
+              <parameter key="(?iu)(c){3,}?" value="$1"/>
+              <parameter key="(?iu)(d){3,}?" value="$1"/>
+              <parameter key="(?iu)(e){3,}?" value="$1"/>
+              <parameter key="(?iu)(f){3,}?" value="$1"/>
+              <parameter key="(?iu)(g){3,}?" value="$1"/>
+              <parameter key="(?iu)(h){3,}?" value="$1"/>
+              <parameter key="(?iu)(i){3,}?" value="$1"/>
+              <parameter key="(?iu)(j){3,}?" value="$1"/>
+              <parameter key="(?iu)(k){3,}?" value="$1"/>
+              <parameter key="(?iu)(l){3,}?" value="$1"/>
+              <parameter key="(?iu)(m){3,}?" value="$1"/>
+              <parameter key="(?iu)(n){3,}?" value="$1"/>
+              <parameter key="(?iu)(o){3,}?" value="$1"/>
+              <parameter key="(?iu)(p){3,}?" value="$1"/>
+              <parameter key="(?iu)(q){3,}?" value="$1"/>
+              <parameter key="(?iu)(r){3,}?" value="$1"/>
+              <parameter key="(?iu)(s){3,}?" value="$1"/>
+              <parameter key="(?iu)(t){3,}?" value="$1"/>
+              <parameter key="(?iu)(u){3,}?" value="$1"/>
+              <parameter key="(?iu)(v){3,}?" value="$1"/>
+              <parameter key="(?iu)(w){3,}?" value="$1"/>
+              <parameter key="(?iu)(x){3,}?" value="$1"/>
+              <parameter key="(?iu)(y){3,}?" value="$1"/>
+              <parameter key="(?iu)(z){3,}?" value="$1"/>
+            </list>
+          </operator>
+          <operator activated="true" class="text:tokenize" compatibility="7.3.000" expanded="true" height="68" name="Tokenize" width="90" x="179" y="120">
+            <parameter key="mode" value="non letters"/>
+            <parameter key="characters" value=".: "/>
+            <parameter key="language" value="English"/>
+            <parameter key="max_token_length" value="3"/>
+          </operator>
+          <operator activated="true" class="text:filter_stopwords_dictionary" compatibility="7.3.000" expanded="true" height="82" name="Filter Stopwords (Dictionary)" width="90" x="179" y="187">
+            <parameter key="file" value="C:\Users\suvad\Desktop\CS583\Project 2\stopword.txt"/>
+            <parameter key="case_sensitive" value="false"/>
+            <parameter key="encoding" value="SYSTEM"/>
+          </operator>
+          <operator activated="true" class="text:filter_tokens_by_content" compatibility="7.3.000" expanded="true" height="68" name="Filter Tokens (by Content)" width="90" x="179" y="300">
+            <parameter key="condition" value="contains match"/>
+            <parameter key="regular_expression" value="(obama)|(romney)|(president)|(ryan)|(mit)|(bara)|(vote)|(election)|(people)|(democracy)"/>
+            <parameter key="case_sensitive" value="false"/>
+            <parameter key="invert condition" value="true"/>
+          </operator>
+          <operator activated="true" class="text:stem_porter" compatibility="7.3.000" expanded="true" height="68" name="Stem (2)" width="90" x="313" y="30"/>
+          <operator activated="false" class="text:generate_n_grams_terms" compatibility="7.3.000" expanded="true" height="68" name="Generate n-Grams (Terms)" width="90" x="313" y="120">
+            <parameter key="max_length" value="2"/>
+          </operator>
+          <operator activated="false" class="text:filter_by_length" compatibility="7.3.000" expanded="true" height="68" name="Filter Tokens (by Length)" width="90" x="313" y="300">
+            <parameter key="min_chars" value="3"/>
+            <parameter key="max_chars" value="30"/>
+          </operator>
+          <operator activated="false" class="text:filter_tokens_by_content" compatibility="7.3.000" expanded="true" height="68" name="Filter Tokens (4)" width="90" x="447" y="289">
+            <parameter key="condition" value="contains"/>
+            <parameter key="string" value="_"/>
+            <parameter key="case_sensitive" value="false"/>
+            <parameter key="invert condition" value="false"/>
+          </operator>
+          <operator activated="false" class="text:filter_stopwords_english" compatibility="7.3.000" expanded="true" height="68" name="Filter Stopwords (2)" width="90" x="447" y="187"/>
+          <connect from_port="document" to_op="Extract Content" to_port="document"/>
+          <connect from_op="Extract Content" from_port="document" to_op="Transform Cases (2)" to_port="document"/>
+          <connect from_op="Transform Cases (2)" from_port="document" to_op="Replace Tokens (2)" to_port="document"/>
+          <connect from_op="Replace Tokens (2)" from_port="document" to_op="Tokenize" to_port="document"/>
+          <connect from_op="Tokenize" from_port="document" to_op="Filter Stopwords (Dictionary)" to_port="document"/>
+          <connect from_op="Filter Stopwords (Dictionary)" from_port="document" to_op="Filter Tokens (by Content)" to_port="document"/>
+          <connect from_op="Filter Tokens (by Content)" from_port="document" to_op="Stem (2)" to_port="document"/>
+          <connect from_op="Stem (2)" from_port="document" to_port="document 1"/>
+          <portSpacing port="source_document" spacing="0"/>
+          <portSpacing port="sink_document 1" spacing="0"/>
+          <portSpacing port="sink_document 2" spacing="0"/>
+        </process>
+      </operator>
+      <operator activated="true" class="select_attributes" compatibility="7.3.000" expanded="true" height="82" name="Select Attributes" width="90" x="179" y="220">
+        <parameter key="attribute_filter_type" value="no_missing_values"/>
+        <parameter key="attribute" value=""/>
+        <parameter key="attributes" value=""/>
+        <parameter key="use_except_expression" value="false"/>
+        <parameter key="value_type" value="attribute_value"/>
+        <parameter key="use_value_type_exception" value="false"/>
+        <parameter key="except_value_type" value="time"/>
+        <parameter key="block_type" value="attribute_block"/>
+        <parameter key="use_block_type_exception" value="false"/>
+        <parameter key="except_block_type" value="value_matrix_row_start"/>
+        <parameter key="invert_selection" value="false"/>
+        <parameter key="include_special_attributes" value="true"/>
+      </operator>
+      <operator activated="true" class="weka:W-NaiveBayesMultinomial" compatibility="7.3.000" expanded="true" height="82" name="W-NaiveBayesMultinomial (2)" width="90" x="581" y="191">
+        <parameter key="D" value="false"/>
+      </operator>
+      <operator activated="true" class="read_excel" compatibility="7.3.000" expanded="true" height="68" name="Read Excel (2)" width="90" x="179" y="497">
+        <parameter key="excel_file" value="C:\Users\suvad\Downloads\testing-Obama-Romney-tweets.xlsx"/>
+        <parameter key="sheet_number" value="4"/>
+        <parameter key="imported_cell_range" value="A1:G1271"/>
+        <parameter key="encoding" value="SYSTEM"/>
+        <parameter key="first_row_as_names" value="true"/>
+        <list key="annotations">
+          <parameter key="0" value="Name"/>
+        </list>
+        <parameter key="date_format" value=""/>
+        <parameter key="time_zone" value="SYSTEM"/>
+        <parameter key="locale" value="English (United States)"/>
+        <list key="data_set_meta_data_information">
+          <parameter key="0" value="Anotated tweet.true.text.attribute"/>
+          <parameter key="1" value="Class.true.integer.label"/>
+          <parameter key="2" value="C.false.attribute_value.attribute"/>
+          <parameter key="3" value="D.false.attribute_value.attribute"/>
+          <parameter key="4" value="E.false.attribute_value.attribute"/>
+          <parameter key="5" value="F.false.attribute_value.attribute"/>
+          <parameter key="6" value="G.false.attribute_value.attribute"/>
+        </list>
+        <parameter key="read_not_matching_values_as_missings" value="false"/>
+        <parameter key="datamanagement" value="double_array"/>
+      </operator>
+      <operator activated="true" class="filter_examples" compatibility="7.3.000" expanded="true" height="103" name="Filter Examples (2)" width="90" x="313" y="490">
+        <parameter key="parameter_expression" value=""/>
+        <parameter key="condition_class" value="no_missing_attributes"/>
+        <parameter key="invert_filter" value="false"/>
+        <list key="filters_list">
+          <parameter key="filters_entry_key" value="Anotated tweet.is_not_missing."/>
+        </list>
+        <parameter key="filters_logic_and" value="false"/>
+        <parameter key="filters_check_metadata" value="true"/>
+      </operator>
+      <operator activated="true" class="numerical_to_polynominal" compatibility="7.3.000" expanded="true" height="82" name="Numerical to Polynominal (2)" width="90" x="447" y="490">
+        <parameter key="attribute_filter_type" value="no_missing_values"/>
+        <parameter key="attribute" value=""/>
+        <parameter key="attributes" value="Class"/>
+        <parameter key="use_except_expression" value="false"/>
+        <parameter key="value_type" value="numeric"/>
+        <parameter key="use_value_type_exception" value="false"/>
+        <parameter key="except_value_type" value="real"/>
+        <parameter key="block_type" value="value_series"/>
+        <parameter key="use_block_type_exception" value="false"/>
+        <parameter key="except_block_type" value="value_series_end"/>
+        <parameter key="invert_selection" value="false"/>
+        <parameter key="include_special_attributes" value="true"/>
+      </operator>
+      <operator activated="true" class="text:process_document_from_data" compatibility="7.3.000" expanded="true" height="82" name="Process Documents from Data (3)" width="90" x="581" y="497">
+        <parameter key="create_word_vector" value="true"/>
+        <parameter key="vector_creation" value="TF-IDF"/>
+        <parameter key="add_meta_information" value="true"/>
+        <parameter key="keep_text" value="false"/>
+        <parameter key="prune_method" value="by ranking"/>
+        <parameter key="prune_below_percent" value="3.0"/>
+        <parameter key="prune_above_percent" value="30.0"/>
+        <parameter key="prune_below_rank" value="0.3"/>
+        <parameter key="prune_above_rank" value="0.97"/>
+        <parameter key="datamanagement" value="double_sparse_array"/>
+        <parameter key="select_attributes_and_weights" value="false"/>
+        <list key="specify_weights"/>
+        <process expanded="true">
+          <operator activated="true" class="web:extract_html_text_content" compatibility="7.3.000" expanded="true" height="68" name="Extract Content (2)" width="90" x="45" y="30">
+            <parameter key="extract_content" value="true"/>
+            <parameter key="minimum_text_block_length" value="2"/>
+            <parameter key="override_content_type_information" value="false"/>
+            <parameter key="neglegt_span_tags" value="true"/>
+            <parameter key="neglect_p_tags" value="true"/>
+            <parameter key="neglect_b_tags" value="true"/>
+            <parameter key="neglect_i_tags" value="true"/>
+            <parameter key="neglect_br_tags" value="true"/>
+            <parameter key="ignore_non_html_tags" value="false"/>
+          </operator>
+          <operator activated="true" class="text:transform_cases" compatibility="7.3.000" expanded="true" height="68" name="Transform Cases (3)" width="90" x="45" y="120">
+            <parameter key="transform_to" value="lower case"/>
+          </operator>
+          <operator activated="true" class="text:replace_tokens" compatibility="7.3.000" expanded="true" height="68" name="Replace Tokens (5)" width="90" x="45" y="210">
+            <list key="replace_dictionary">
+              <parameter key="http([a-zA-Z0-9./:]*)([ \r\n])*" value=" "/>
+              <parameter key="(:\-\))" value=" positive "/>
+              <parameter key="(:\))" value=" positive "/>
+              <parameter key="(:o\))" value=" positive "/>
+              <parameter key="(:\])" value=" positive "/>
+              <parameter key="(:3)" value=" positive "/>
+              <parameter key="(:c\))" value=" positive "/>
+              <parameter key="(:d)" value=" positive "/>
+              <parameter key="(c:)" value=" positive "/>
+              <parameter key="(:\-\()" value=" negative "/>
+              <parameter key="(:\()" value=" negative "/>
+              <parameter key="(:c)" value=" negative "/>
+              <parameter key="(:\[)" value=" negative "/>
+              <parameter key="[!;,?.'&quot;\-%$&lt;&gt;&amp;\(\)\{\}\[\]_\_=,;:\*\\~\+#]" value=" "/>
+              <parameter key="\s{2,}?" value=" "/>
+              <parameter key="\s{2,}?" value=" "/>
+              <parameter key="\s(no)" value=" negative "/>
+              <parameter key="\s(not)" value=" negative "/>
+              <parameter key="\s(nt)" value=" negative "/>
+              <parameter key="(n't)" value=" negative "/>
+              <parameter key="\s{2,}?" value="  "/>
+            </list>
+          </operator>
+          <operator activated="false" class="text:replace_tokens" compatibility="7.3.000" expanded="true" height="68" name="Replace Tokens (6)" width="90" x="45" y="289">
+            <list key="replace_dictionary">
+              <parameter key="(\/)" value=" "/>
+              <parameter key="([a-z]+)[0-9]+" value="$1 "/>
+              <parameter key="[0-9]+([a-z]+)" value="$1 "/>
+              <parameter key="\s+[0-9]+[-!&quot;#$%&amp;'()*+,./:;&lt;=&gt;?@\[\\\]_`{|}~]" value="$1 "/>
+              <parameter key="@[a-z0-9]+" value=" "/>
+            </list>
+          </operator>
+          <operator activated="false" class="text:replace_tokens" compatibility="7.3.000" expanded="true" height="68" name="Replace Tokens (7)" width="90" x="179" y="30">
+            <list key="replace_dictionary">
+              <parameter key="(?iu)(a){3,}?" value="$1"/>
+              <parameter key="(?iu)(b){3,}?" value="$1"/>
+              <parameter key="(?iu)(c){3,}?" value="$1"/>
+              <parameter key="(?iu)(d){3,}?" value="$1"/>
+              <parameter key="(?iu)(e){3,}?" value="$1"/>
+              <parameter key="(?iu)(f){3,}?" value="$1"/>
+              <parameter key="(?iu)(g){3,}?" value="$1"/>
+              <parameter key="(?iu)(h){3,}?" value="$1"/>
+              <parameter key="(?iu)(i){3,}?" value="$1"/>
+              <parameter key="(?iu)(j){3,}?" value="$1"/>
+              <parameter key="(?iu)(k){3,}?" value="$1"/>
+              <parameter key="(?iu)(l){3,}?" value="$1"/>
+              <parameter key="(?iu)(m){3,}?" value="$1"/>
+              <parameter key="(?iu)(n){3,}?" value="$1"/>
+              <parameter key="(?iu)(o){3,}?" value="$1"/>
+              <parameter key="(?iu)(p){3,}?" value="$1"/>
+              <parameter key="(?iu)(q){3,}?" value="$1"/>
+              <parameter key="(?iu)(r){3,}?" value="$1"/>
+              <parameter key="(?iu)(s){3,}?" value="$1"/>
+              <parameter key="(?iu)(t){3,}?" value="$1"/>
+              <parameter key="(?iu)(u){3,}?" value="$1"/>
+              <parameter key="(?iu)(v){3,}?" value="$1"/>
+              <parameter key="(?iu)(w){3,}?" value="$1"/>
+              <parameter key="(?iu)(x){3,}?" value="$1"/>
+              <parameter key="(?iu)(y){3,}?" value="$1"/>
+              <parameter key="(?iu)(z){3,}?" value="$1"/>
+            </list>
+          </operator>
+          <operator activated="true" class="text:tokenize" compatibility="7.3.000" expanded="true" height="68" name="Tokenize (3)" width="90" x="179" y="120">
+            <parameter key="mode" value="specify characters"/>
+            <parameter key="characters" value=".: "/>
+            <parameter key="language" value="English"/>
+            <parameter key="max_token_length" value="3"/>
+          </operator>
+          <operator activated="true" class="text:filter_stopwords_dictionary" compatibility="7.3.000" expanded="true" height="82" name="Filter Stopwords (3)" width="90" x="179" y="187">
+            <parameter key="file" value="C:\Users\suvad\Desktop\CS583\Project 2\stopword.txt"/>
+            <parameter key="case_sensitive" value="false"/>
+            <parameter key="encoding" value="SYSTEM"/>
+          </operator>
+          <operator activated="false" class="text:filter_stopwords_english" compatibility="7.3.000" expanded="true" height="68" name="Filter Stopwords (English)" width="90" x="447" y="187"/>
+          <operator activated="false" class="text:filter_by_length" compatibility="7.3.000" expanded="true" height="68" name="Filter Tokens (6)" width="90" x="313" y="300">
+            <parameter key="min_chars" value="3"/>
+            <parameter key="max_chars" value="30"/>
+          </operator>
+          <operator activated="false" class="text:filter_tokens_by_content" compatibility="7.3.000" expanded="true" height="68" name="Filter Tokens (7)" width="90" x="447" y="30">
+            <parameter key="condition" value="contains"/>
+            <parameter key="string" value="_"/>
+            <parameter key="case_sensitive" value="false"/>
+            <parameter key="invert condition" value="false"/>
+          </operator>
+          <operator activated="true" class="text:filter_tokens_by_content" compatibility="7.3.000" expanded="true" height="68" name="Filter Tokens (5)" width="90" x="179" y="300">
+            <parameter key="condition" value="contains match"/>
+            <parameter key="regular_expression" value="(obama)|(romney)|(president)|(ryan)|(mit)|(bara)|(vote)|(election)|(people)|(democracy)"/>
+            <parameter key="case_sensitive" value="false"/>
+            <parameter key="invert condition" value="true"/>
+          </operator>
+          <operator activated="true" class="text:stem_porter" compatibility="7.3.000" expanded="true" height="68" name="Stem (3)" width="90" x="313" y="30"/>
+          <operator activated="false" class="text:generate_n_grams_terms" compatibility="7.3.000" expanded="true" height="68" name="Generate n-Grams (3)" width="90" x="313" y="120">
+            <parameter key="max_length" value="10"/>
+          </operator>
+          <connect from_port="document" to_op="Extract Content (2)" to_port="document"/>
+          <connect from_op="Extract Content (2)" from_port="document" to_op="Transform Cases (3)" to_port="document"/>
+          <connect from_op="Transform Cases (3)" from_port="document" to_op="Replace Tokens (5)" to_port="document"/>
+          <connect from_op="Replace Tokens (5)" from_port="document" to_op="Tokenize (3)" to_port="document"/>
+          <connect from_op="Tokenize (3)" from_port="document" to_op="Filter Stopwords (3)" to_port="document"/>
+          <connect from_op="Filter Stopwords (3)" from_port="document" to_op="Filter Tokens (5)" to_port="document"/>
+          <connect from_op="Filter Tokens (5)" from_port="document" to_op="Stem (3)" to_port="document"/>
+          <connect from_op="Stem (3)" from_port="document" to_port="document 1"/>
+          <portSpacing port="source_document" spacing="0"/>
+          <portSpacing port="sink_document 1" spacing="0"/>
+          <portSpacing port="sink_document 2" spacing="0"/>
+        </process>
+      </operator>
+      <operator activated="true" class="select_attributes" compatibility="7.3.000" expanded="true" height="82" name="Select Attributes (2)" width="90" x="179" y="355">
+        <parameter key="attribute_filter_type" value="no_missing_values"/>
+        <parameter key="attribute" value=""/>
+        <parameter key="attributes" value=""/>
+        <parameter key="use_except_expression" value="false"/>
+        <parameter key="value_type" value="attribute_value"/>
+        <parameter key="use_value_type_exception" value="false"/>
+        <parameter key="except_value_type" value="time"/>
+        <parameter key="block_type" value="attribute_block"/>
+        <parameter key="use_block_type_exception" value="false"/>
+        <parameter key="except_block_type" value="value_matrix_row_start"/>
+        <parameter key="invert_selection" value="false"/>
+        <parameter key="include_special_attributes" value="true"/>
+      </operator>
+      <operator activated="true" class="apply_model" compatibility="7.1.001" expanded="true" height="82" name="Apply Model (2)" width="90" x="447" y="310">
+        <list key="application_parameters"/>
+        <parameter key="create_view" value="false"/>
+      </operator>
+      <operator activated="true" class="performance_classification" compatibility="7.3.000" expanded="true" height="82" name="Performance (2)" width="90" x="581" y="355">
+        <parameter key="main_criterion" value="first"/>
+        <parameter key="accuracy" value="true"/>
+        <parameter key="classification_error" value="false"/>
+        <parameter key="kappa" value="false"/>
+        <parameter key="weighted_mean_recall" value="false"/>
+        <parameter key="weighted_mean_precision" value="false"/>
+        <parameter key="spearman_rho" value="false"/>
+        <parameter key="kendall_tau" value="false"/>
+        <parameter key="absolute_error" value="false"/>
+        <parameter key="relative_error" value="false"/>
+        <parameter key="relative_error_lenient" value="false"/>
+        <parameter key="relative_error_strict" value="false"/>
+        <parameter key="normalized_absolute_error" value="false"/>
+        <parameter key="root_mean_squared_error" value="false"/>
+        <parameter key="root_relative_squared_error" value="false"/>
+        <parameter key="squared_error" value="false"/>
+        <parameter key="correlation" value="false"/>
+        <parameter key="squared_correlation" value="false"/>
+        <parameter key="cross-entropy" value="false"/>
+        <parameter key="margin" value="false"/>
+        <parameter key="soft_margin_loss" value="false"/>
+        <parameter key="logistic_loss" value="false"/>
+        <parameter key="skip_undefined_labels" value="true"/>
+        <parameter key="use_example_weights" value="true"/>
+        <list key="class_weights"/>
+      </operator>
+      <connect from_op="Read Excel" from_port="output" to_op="Filter Examples" to_port="example set input"/>
+      <connect from_op="Filter Examples" from_port="example set output" to_op="Numerical to Polynominal" to_port="example set input"/>
+      <connect from_op="Numerical to Polynominal" from_port="example set output" to_op="Process Documents from Data" to_port="example set"/>
+      <connect from_op="Process Documents from Data" from_port="example set" to_op="Select Attributes" to_port="example set input"/>
+      <connect from_op="Select Attributes" from_port="example set output" to_op="W-NaiveBayesMultinomial (2)" to_port="training set"/>
+      <connect from_op="W-NaiveBayesMultinomial (2)" from_port="model" to_op="Apply Model (2)" to_port="model"/>
+      <connect from_op="Read Excel (2)" from_port="output" to_op="Filter Examples (2)" to_port="example set input"/>
+      <connect from_op="Filter Examples (2)" from_port="example set output" to_op="Numerical to Polynominal (2)" to_port="example set input"/>
+      <connect from_op="Numerical to Polynominal (2)" from_port="example set output" to_op="Process Documents from Data (3)" to_port="example set"/>
+      <connect from_op="Process Documents from Data (3)" from_port="example set" to_op="Select Attributes (2)" to_port="example set input"/>
+      <connect from_op="Select Attributes (2)" from_port="example set output" to_op="Apply Model (2)" to_port="unlabelled data"/>
+      <connect from_op="Apply Model (2)" from_port="labelled data" to_op="Performance (2)" to_port="labelled data"/>
+      <connect from_op="Performance (2)" from_port="performance" to_port="result 1"/>
+      <connect from_op="Performance (2)" from_port="example set" to_port="result 2"/>
+      <portSpacing port="source_input 1" spacing="0"/>
+      <portSpacing port="sink_result 1" spacing="0"/>
+      <portSpacing port="sink_result 2" spacing="0"/>
+      <portSpacing port="sink_result 3" spacing="0"/>
+    </process>
+  </operator>
+</process>

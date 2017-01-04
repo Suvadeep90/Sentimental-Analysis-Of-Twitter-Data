@@ -1,0 +1,16 @@
+OBAMA
+
+Overall accuracy: 53.42%
+			
+		Precision	Recall		F-score
+Predicted 1	54.20%		66.57%		0.597514946
+Predicted -1	45.88%		48.67%		0.472338361
+
+
+ROMNEY	
+
+Overall accuracy: 55.51%
+		
+		Precision	Recall		F-score
+Predicted 1	30.37%		39.20%		0.342246371
+Predicted -1	70.99%		62.35%		0.66390078
